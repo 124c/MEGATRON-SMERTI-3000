@@ -20,16 +20,32 @@ def hurst_core(array):
         tau.append(np.sqrt(np.std(array[lag:] - array[:-lag])))
 
     # Use a linear fit to estimate the Hurst Exponent
-    poly = np.polyfit(np.log(lags), np.log(tau), 1)
+    poly = np.polyfit(np.log10(lags), np.log10(tau), 1)
 
     # Return the Hurst exponent from the polyfit output
     return poly[0]*2.0
 
 
 def hurst_exponent(time_series, window):
-    """Returns a vector of rolling hurst exponent values"""
+    """Returns a series of rolling hurst exponent values"""
     return time_series.rolling(window).apply(hurst_core)
 
+
+def momentum(time_series, window):
+    """Returns a series of momentum indicator values"""
+    # formula: (Pt/Pt-window) * 100
+    return 100 * (time_series.pct_change(window)+1)
+
+
+def macd(time_series, slow, fast, internal):
+    """Returns MACD indicator and it's moving averages"""
+    macd = pd.DataFrame()
+    macd['EMA_slow'] = time_series.ewm(alpha=2/slow, min_periods=1).mean()
+    macd['EMA_fast'] = time_series.ewm(alpha=2/fast, min_periods=1).mean()
+    macd['EMA_slow-fast'] = macd['EMA_slow'] - macd['EMA_fast']
+    macd['MACD_ema'] = macd['EMA_slow-fast'].ewm(alpha=2/internal, min_periods=1).mean()
+    macd['MACD_signal_line'] = macd['EMA_slow-fast'] - macd['MACD_ema']
+    return macd
 
 # gbm = np.log(np.cumsum(randn(100000))+1000)
 # mr = np.log(randn(100000)+1000)

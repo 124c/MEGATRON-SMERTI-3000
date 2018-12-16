@@ -51,9 +51,23 @@ viz.visualize_heatmap_hit_ratio(profit_heatmap=rsi_profit_map, hit_heatmap=rsi_h
 rsi_upper, rsi_lower = optim.find_robust_areas(heatmap=rsi_profit_map, n_clusters=200)
 print(optim.find_robust_areas(heatmap=rsi_hit_ratio_map, n_clusters=30))
 
+macd, macdsignal, macdhist = talib.MACD(data['close'].shift(), fastperiod=5, slowperiod=8, signalperiod=4)
+rsi_values = talib.RSI(data['close'].shift(), timeperiod=rsi_period)
+
+indicator_signals = pd.DataFrame()
+indicator_signals['macd_signal'] = sign.momentum_signals(macdsignal)
+indicator_signals['rsi_signal'] = sign.rsi_signals(rsi_values, upper_threshold=rsi_upper, lower_threshold=rsi_lower)
+indicator_signals['hurst'] = hurst_data
+indicator_signals['filtered_signals'] = sign.hurst_filter(momentum_ind=indicator_signals['macd_signal'],
+                                                          meanreverse_ind=indicator_signals['rsi_signal'],
+                                                          hurst=indicator_signals['hurst'],
+                                                          mom_barrier=0.13,
+                                                          meanrev_barrier=-0.4)
+
 
 plt.plot(pnl_data['filtered_signals_pnl'].cumsum())
-plt.plot(pnl_data['momentum_signal_pnl'].cumsum())
+plt.plot(pnl_data['rsi_signal_pnl'].cumsum())
+
 
 
 

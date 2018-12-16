@@ -49,6 +49,7 @@ rsi_hit_ratio_map, rsi_profit_map = optim.optimize_rsi_thresholds(data, rsi_valu
 viz.visualize_heatmap_hit_ratio(profit_heatmap=rsi_profit_map, hit_heatmap=rsi_hit_ratio_map)
 
 rsi_upper, rsi_lower = optim.find_robust_areas(heatmap=rsi_profit_map, n_clusters=200)
+print(optim.find_robust_areas(heatmap=rsi_hit_ratio_map, n_clusters=30))
 
 
 plt.plot(pnl_data['filtered_signals_pnl'].cumsum())

@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+from sklearn.cluster import KMeans
 
 import alpha.signal_generators as sign
 import backtesting.backtester as bt
@@ -64,3 +65,22 @@ def optimize_rsi_thresholds(data, rsi_values):
             hit_heatmap.loc[j, k] = hit_ratio
             profit_heatmap.loc[j, k] = pnl_data
     return hit_heatmap, profit_heatmap
+
+
+def find_robust_areas(heatmap, n_clusters=50):
+    """
+    Calculates centroids in heatmaps using k-means clustering
+    """
+    arr = heatmap.fillna(0).unstack()
+    indvals = arr.index.values
+    Y_data = np.round(arr.values, decimals=3)
+    X_data = np.array([list(x) for x in indvals], dtype=float)
+    X_data = np.insert(X_data, 2, Y_data, axis=1)
+
+    # KMeans algorithm
+    kmeans_model = KMeans(n_clusters=n_clusters).fit(X_data)
+    centroids = pd.DataFrame(kmeans_model.cluster_centers_)
+    mx = max(centroids[2])
+    key_index = list(centroids[2]).index(mx)
+    best_thresholds = np.round(centroids[centroids.index == key_index].values[0][:2])
+    return best_thresholds

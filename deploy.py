@@ -2,8 +2,10 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 import seaborn as sns
+from sklearn.cluster import KMeans
 from numpy.random import randn
 import talib
+
 
 from datasets.clean_dataset import load_ohlc_dataset
 import alpha.technical_indicators as tech
@@ -45,11 +47,8 @@ rsi_values = talib.RSI(data['close'].shift(), timeperiod=rsi_period)
 rsi_hit_ratio_map, rsi_profit_map = optim.optimize_rsi_thresholds(data, rsi_values)
 # visualize and give it best thresholds based on that
 viz.visualize_heatmap_hit_ratio(profit_heatmap=rsi_profit_map, hit_heatmap=rsi_hit_ratio_map)
-rsi_lower = 27
-rsi_upper = 81
 
-
-
+rsi_upper, rsi_lower = optim.find_robust_areas(heatmap=rsi_profit_map, n_clusters=200)
 
 
 plt.plot(pnl_data['filtered_signals_pnl'].cumsum())

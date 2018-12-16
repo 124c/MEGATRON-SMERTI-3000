@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
+import seaborn as sns
 from numpy.random import randn
 import talib
 
@@ -8,6 +9,8 @@ from datasets.clean_dataset import load_ohlc_dataset
 import alpha.technical_indicators as tech
 import alpha.signal_generators as sign
 import backtesting.backtester as bt
+import optimization.optimization as optim
+import visualization.visualize_optimization as viz
 
 start_time = '2002-04-08'
 end_time = '2003-04-07'
@@ -35,6 +38,20 @@ indicator_signals['filtered_signals'] = sign.hurst_filter(momentum_ind=indicator
 pnl_data = bt.get_profit_and_loss(data=data['close'].pct_change(), signals=indicator_signals)
 conf_matrix = bt.get_confusion_matrix(data['close'], pnl_data['filtered_signals'])
 hit_ratio = bt.get_hit_ratio(conf_matrix)
+
+rsi_period = optim.optimize_rsi_period(data)
+rsi_values = talib.RSI(data['close'].shift(), timeperiod=rsi_period)
+
+rsi_hit_ratio_map, rsi_profit_map = optim.optimize_rsi_thresholds(data, rsi_values)
+# visualize and give it best thresholds based on that
+viz.visualize_heatmap_hit_ratio(profit_heatmap=rsi_profit_map, hit_heatmap=rsi_hit_ratio_map)
+rsi_lower = 27
+rsi_upper = 81
+
+
+
+
+
 plt.plot(pnl_data['filtered_signals_pnl'].cumsum())
 plt.plot(pnl_data['momentum_signal_pnl'].cumsum())
 

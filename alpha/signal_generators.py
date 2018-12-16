@@ -53,6 +53,5 @@ def hurst_filter(momentum_ind, meanreverse_ind, hurst, mom_barrier=0, meanrev_ba
     mom_signals = np.where(hurst.values > mom_barrier, momentum_ind, 0)
     meanreversion_signals = np.where(hurst < meanrev_barrier, meanreverse_ind, 0)
     signals = meanreversion_signals + mom_signals
-    print(signals.shape)
     signals = pd.DataFrame(signals, index=momentum_ind.index)
     return signals

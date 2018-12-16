@@ -1,8 +1,9 @@
 import pandas as pd
 import numpy as np
+import execution.slippage as exc
 
 
-def get_profit_and_loss(data, signals):
+def get_profit_and_loss(data, signals, ex):
     """
     Loads Market data of different types (currently only returns) and combines it with trading signals df
     As a result we obtain dataset with profits and losses for each strategy in signals dataframe
@@ -16,8 +17,15 @@ def get_profit_and_loss(data, signals):
         pnl_data = pd.concat([data, signals], axis=1).dropna()
         for signal in signals.columns:
             pnl_data[signal+'_pnl'] = pnl_data[signal] * data
+            if ex == 1:
+                slip = exc.slippage(data)
+                pnl_data[signal + '_pnl'] = pnl_data[signal] * (data+slip)
     else:
-        pnl_data = data * signals
+        if ex == 1:
+            slip = exc.slippage(data)
+            pnl_data = (data+slip) * signals
+        else:
+            pnl_data = data * signals
 
     return pnl_data
 

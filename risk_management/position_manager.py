@@ -16,3 +16,11 @@ def get_trades_pnl():
     """
     return False
 
+
+def minimal_loss_cutter():
+    """
+    A mathematical function that will cut our trades in case of losses
+    Calculate an average number of loss trades for each time period, calculate other stats
+    Basing on these observations, cut where necessary
+    """
+    return False

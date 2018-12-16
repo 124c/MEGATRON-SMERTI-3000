@@ -37,7 +37,7 @@ indicator_signals['filtered_signals'] = sign.hurst_filter(momentum_ind=indicator
                                                           mom_barrier=0,
                                                           meanrev_barrier=0)
 
-pnl_data = bt.get_profit_and_loss(data=data['close'].pct_change(), signals=indicator_signals)
+pnl_data = bt.get_profit_and_loss(data=data['close'].pct_change(), signals=indicator_signals, ex=0)
 conf_matrix = bt.get_confusion_matrix(data['close'], pnl_data['filtered_signals'])
 hit_ratio = bt.get_hit_ratio(conf_matrix)
 
@@ -61,9 +61,14 @@ indicator_signals['hurst'] = hurst_data
 indicator_signals['filtered_signals'] = sign.hurst_filter(momentum_ind=indicator_signals['macd_signal'],
                                                           meanreverse_ind=indicator_signals['rsi_signal'],
                                                           hurst=indicator_signals['hurst'],
-                                                          mom_barrier=0.13,
-                                                          meanrev_barrier=-0.4)
+                                                          mom_barrier=0.1,
+                                                          meanrev_barrier=-0.1)
 
+pnl_data = bt.get_profit_and_loss(data=data['close'].pct_change(), signals=indicator_signals, ex=1)
+conf_matrix = bt.get_confusion_matrix(data['close'], pnl_data['filtered_signals'])
+hit_ratio = bt.get_hit_ratio(conf_matrix)
+print(hit_ratio)
+print(sum(pnl_data['filtered_signals_pnl'].dropna()))
 
 plt.plot(pnl_data['filtered_signals_pnl'].cumsum())
 plt.plot(pnl_data['rsi_signal_pnl'].cumsum())

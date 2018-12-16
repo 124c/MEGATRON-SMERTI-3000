@@ -2,8 +2,11 @@ import pandas as pd
 import numpy as np
 
 
-def add_slippage(data, slippage_range):
+def slippage(data):
     """
     Adds Slippage to the dataset while final execution
     """
-    return False
+    mu = data.mean()
+    sigma = data.std()
+    slip = np.random.normal(mu, sigma, len(data))
+    return slip

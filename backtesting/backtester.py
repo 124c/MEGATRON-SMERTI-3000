@@ -32,7 +32,7 @@ def get_profit_and_loss(data, signals, ex):
 
 def get_confusion_matrix(data, signals):
     """
-    Returms confsion matrix of trading strategy
+    Returns confsion matrix of trading strategy
     data input here is a series or a numpy array
     """
     actual_movements = np.where(data.diff() > 0, 1, -1)

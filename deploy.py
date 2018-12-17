@@ -5,6 +5,7 @@ import seaborn as sns
 from sklearn.cluster import KMeans
 from numpy.random import randn
 import talib
+import pickle
 
 
 from datasets.clean_dataset import load_ohlc_dataset
@@ -14,6 +15,7 @@ import alpha.alpha_engine as alpha
 import backtesting.backtester as bt
 import backtesting.backtester_engine as backtest
 import optimization.optimization as optim
+import optimization.optimization_engine as optimization
 import visualization.visualize_optimization as viz
 
 start_time = '2002-04-08'
@@ -47,38 +49,23 @@ print(sum(pnl_data['filtered_signals_pnl'].dropna()))
 
 # visualization of first results
 viz.bokeh_cumulative_return(pnl_data=pnl_data)
-viz.visualize_heatmap_hit_ratio(pnl_data)
 
+optimization.deploy_optimization(data=data, params_dict=params_dict)
 
-rsi_period = optim.optimize_rsi_period(data)
-rsi_values = talib.RSI(data['close'].shift(), timeperiod=rsi_period)
+pkl_file = open('datasets/optimization/params_dict.pkl', 'rb')
+params_dict = pickle.load(pkl_file)
+pkl_file.close()
 
-rsi_hit_ratio_map, rsi_profit_map = optim.optimize_rsi_thresholds(data, rsi_values)
-# visualize and give it best thresholds based on that
-viz.visualize_heatmap_hit_ratio(profit_heatmap=rsi_profit_map, hit_heatmap=rsi_hit_ratio_map)
-
-rsi_upper, rsi_lower = optim.find_robust_areas(heatmap=rsi_profit_map, n_clusters=200)
-print(optim.find_robust_areas(heatmap=rsi_hit_ratio_map, n_clusters=30))
-
-params_dict = {'hurst_period': 24,
-               'macd_fastperiod': 5,
-               'macd_slowperiod': 8,
-               'macd_signalperiod': 4,
-               'rsi_period': rsi_period,
-               'upper_threshold': rsi_upper,
-               'lower_threshold': rsi_lower,
-               'mom_barrier': 0,
-               'meanrev_barrier': 0
-               }
+# deploy tuned alpha
 signals = alpha.deploy_alpha_engine(data, params_dict=params_dict)
 indicator_signals = pd.read_csv('datasets/alpha/alpha_signals.csv', index_col=0)
-
+# deploy backtesting engine
 backtest.deploy_backtesting_engine(data=data, indicator_signals=indicator_signals, ex=0)
 print(hit_ratio)
 print(sum(pnl_data['filtered_signals_pnl'].dropna()))
 
-plt.plot(pnl_data['filtered_signals_pnl'].cumsum())
-plt.plot(pnl_data['rsi_signal_pnl'].cumsum())
+# visualization of first results
+viz.bokeh_cumulative_return(pnl_data=pnl_data)
 
 # now check for the next year
 start_time = '2003-04-08'

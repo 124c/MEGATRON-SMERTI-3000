@@ -1,9 +1,7 @@
 import pandas as pd
-import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-from bokeh.layouts import gridplot
 from bokeh.models import ColumnDataSource
 from bokeh.plotting import figure, show, output_file
 
@@ -22,17 +20,6 @@ def visualize_heatmap_hit_ratio(profit_heatmap, hit_heatmap):
     ax2.yaxis.tick_right()
     ax2.tick_params(rotation=0)
     plt.show()
-    return True
-
-
-def visualize_heatmap_hit_ratio(pnl_data):
-    """
-    Plots cumulative returns
-    """
-    plt.plot(pnl_data['filtered_signals_pnl'].cumsum())
-    plt.plot(pnl_data['rsi_signal_pnl'].cumsum())
-    plt.plot(pnl_data['macd_signal_pnl'].cumsum())
-    plt.legend(bbox_to_anchor=(1.05, 1), borderaxespad=0.)
     return True
 
 

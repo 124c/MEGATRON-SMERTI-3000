@@ -1,6 +1,11 @@
 import pandas as pd
+import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
+
+from bokeh.layouts import gridplot
+from bokeh.models import ColumnDataSource
+from bokeh.plotting import figure, show, output_file
 
 
 def visualize_heatmap_hit_ratio(profit_heatmap, hit_heatmap):
@@ -19,3 +24,31 @@ def visualize_heatmap_hit_ratio(profit_heatmap, hit_heatmap):
     plt.show()
     return True
 
+
+def visualize_heatmap_hit_ratio(pnl_data):
+    """
+    Plots cumulative returns
+    """
+    plt.plot(pnl_data['filtered_signals_pnl'].cumsum())
+    plt.plot(pnl_data['rsi_signal_pnl'].cumsum())
+    plt.plot(pnl_data['macd_signal_pnl'].cumsum())
+    plt.legend(bbox_to_anchor=(1.05, 1), borderaxespad=0.)
+    return True
+
+
+def bokeh_cumulative_return(pnl_data):
+    pnl_data.index.name = 'Date'
+    pnl_data.index = pd.to_datetime(pnl_data.index)
+    pnl_data.sort_index(inplace=True)
+    pnl_data['cumulative_filtered_pnl'] = pnl_data['filtered_signals_pnl'].cumsum()
+    pnl_data['rsi_pnl'] = pnl_data['rsi_signal_pnl'].cumsum()
+    pnl_data['macd_pnl'] = pnl_data['macd_signal_pnl'].cumsum()
+    source = ColumnDataSource(pnl_data)
+
+    p = figure(x_axis_type="datetime", plot_width=800, plot_height=350)
+    p.line('Date', 'cumulative_filtered_pnl', source=source, legend="filtered")
+    p.line('Date', 'macd_pnl', source=source, legend="macd", color="orange")
+    p.line('Date', 'rsi_pnl', source=source, legend="rsi", color="green")
+
+    output_file("ts.html")
+    show(p)

@@ -6,7 +6,7 @@ import alpha.technical_indicators as tech
 import alpha.signal_generators as sign
 
 
-def deploy_alpha(data, params_dict):
+def deploy_alpha_engine(data, params_dict):
     """
     Generate indicator values and signals
     """

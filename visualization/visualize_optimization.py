@@ -37,5 +37,5 @@ def bokeh_cumulative_return(pnl_data):
     p.line('Date', 'macd_pnl', source=source, legend="macd", color="orange")
     p.line('Date', 'rsi_pnl', source=source, legend="rsi", color="green")
 
-    output_file("ts.html")
+    output_file("datasets/optimization/pnl_results.html")
     show(p)

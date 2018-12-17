@@ -71,6 +71,7 @@ print('check for Na in datasets: \n', data.isnull().any())
 # deploy tuned alpha
 signals = alpha.deploy_alpha_engine(data, params_dict=params_dict)
 indicator_signals = pd.read_csv('datasets/alpha/alpha_signals.csv', index_col=0)
+
 # deploy backtesting engine
 backtest.deploy_backtesting_engine(data=data, indicator_signals=indicator_signals, ex=1)
 print(hit_ratio)

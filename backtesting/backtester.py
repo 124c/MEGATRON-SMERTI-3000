@@ -18,11 +18,11 @@ def get_profit_and_loss(data, signals, ex):
         for signal in signals.columns:
             pnl_data[signal+'_pnl'] = pnl_data[signal] * data
             if ex == 1:
-                slip = exc.slippage(data)
+                slip = exc.slippage_and_comission(data)
                 pnl_data[signal + '_pnl'] = pnl_data[signal] * (data+slip)
     else:
         if ex == 1:
-            slip = exc.slippage(data)
+            slip = exc.slippage_and_comission(data)
             pnl_data = (data+slip) * signals
         else:
             pnl_data = data * signals

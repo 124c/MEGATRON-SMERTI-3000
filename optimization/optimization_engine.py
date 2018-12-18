@@ -19,7 +19,7 @@ def deploy_optimization(data, params_dict):
     viz.visualize_heatmap_hit_ratio(profit_heatmap=rsi_profit_map, hit_heatmap=rsi_hit_ratio_map)
 
     params_dict['upper_threshold'], params_dict['lower_threshold'] = optim.find_robust_areas(heatmap=rsi_profit_map,
-                                                                                             n_clusters=200)
+                                                                                             n_clusters=130)
     # print(optim.find_robust_areas(heatmap=rsi_hit_ratio_map, n_clusters=30))
 
     f = open("datasets/optimization/params_dict.pkl", "wb")

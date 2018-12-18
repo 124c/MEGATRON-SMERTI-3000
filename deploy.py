@@ -74,11 +74,10 @@ indicator_signals = pd.read_csv('datasets/alpha/alpha_signals.csv', index_col=0)
 
 # deploy backtesting engine
 backtest.deploy_backtesting_engine(data=data, indicator_signals=indicator_signals, ex=1)
-print(hit_ratio)
-print(sum(pnl_data['filtered_signals_pnl'].dropna()))
 hit_ratio = float(pd.read_csv('datasets/backtesting/hit_ratio.csv').columns[0])
 pnl_data = pd.read_csv('datasets/backtesting/pnl_data.csv', index_col=0)
 conf_matrix = pd.read_csv('datasets/backtesting/conf_matrix.csv', index_col=0)
-
+print(hit_ratio)
+print(sum(pnl_data['filtered_signals_pnl'].dropna()))
 # visualization of tuned results
 viz.bokeh_cumulative_return(pnl_data=pnl_data)

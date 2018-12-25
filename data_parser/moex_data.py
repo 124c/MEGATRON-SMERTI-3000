@@ -13,6 +13,9 @@ def moex_data(tickers, start_date, end_date, form='OHLCV', boardID='TQBR'):
     :return: pandas Data Frame
     """
 
+    # TODO: add hashed data saving feature. i.e. if you have ever loaded data,
+    #  then you won't have to use internet but just load previous data from pickle or else
+
     dirty_data = web.DataReader(tickers, 'moex', start_date, end_date)
     dirty_data = dirty_data[dirty_data['BOARDID'] == boardID]
 

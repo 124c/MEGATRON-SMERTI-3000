@@ -7,8 +7,8 @@ import backtesting.backtester_engine as backtest
 import optimization.optimization_engine as optimization
 import visualization.visualize_optimization as viz
 
-start_time = '2002-04-08'
-end_time = '2003-04-07'
+start_time = '2013-04-08'
+end_time = '2014-04-07'
 
 data = load_ohlc_dataset(start_time=start_time, end_time=end_time)
 print('check for Na in datasets: \n', data.isnull().any())
@@ -63,8 +63,8 @@ conf_matrix = pd.read_csv('datasets/backtesting/conf_matrix.csv', index_col=0)
 viz.bokeh_cumulative_return(pnl_data=pnl_data)
 
 # now check for the next year
-start_time = '2003-04-08'
-end_time = '2004-04-08'
+start_time = '2014-04-08'
+end_time = '2015-04-08'
 data = load_ohlc_dataset(start_time=start_time, end_time=end_time)
 print('check for Na in datasets: \n', data.isnull().any())
 

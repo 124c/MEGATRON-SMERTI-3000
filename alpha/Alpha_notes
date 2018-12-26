@@ -1,0 +1,2 @@
+When passed to alpha, data should be in a form of OHLCV+Ntrades+returns
+Each new alpha module should have it's own name which should denote main internal concepts or components

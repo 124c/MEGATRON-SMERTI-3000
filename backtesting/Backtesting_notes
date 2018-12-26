@@ -1,0 +1,3 @@
+I presume all pd.concat methods should be replaced by pd.merge which is more reliable
+While denotimg an input make sure it is not associated with the data of another format and
+that it clearly reflects wether it is a series or dataframe

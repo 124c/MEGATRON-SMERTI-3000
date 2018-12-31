@@ -9,6 +9,7 @@ import visualization.visualize_optimization as viz
 
 
 if __name__ == "__main__":
+
     start_time = '2015-04-08'
     end_time = '2016-12-31'
 

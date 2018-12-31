@@ -36,8 +36,9 @@ def get_confusion_matrix(data, signals):
     data input here is a series or a numpy array
     """
     actual_movements = np.where(data.diff() > 0, 1, -1)
-    actual_movements = pd.Series(actual_movements, name='Actual', index=data.index)
-    signals = pd.Series(signals, name='Predicted')
+    actual_movements = pd.Series(actual_movements, columns=['Actual'], index=data.index)
+    signals = pd.DataFrame(signals, columns=['Predicted'])
+    uniframe = signals.join(actual_movements, how='outer').dropna()
     return pd.crosstab(actual_movements, signals,  # .replace(0, 1)
                        rownames=['Actual'], colnames=['Predicted'], margins=True)
 

@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 import pickle
 
 from data_parser.moex_data import moex_data
@@ -14,7 +15,7 @@ if __name__ == "__main__":
     end_time = '2016-12-31'
 
     data = moex_data(tickers=['SBER'], start_date=start_time, end_date=end_time, data_form='OHLCV')
-    data['Returns'] = data['Close'].ffill().pct_change()
+    data['Returns'] = np.log(1 + data['Close'].ffill().pct_change())
     data = data.dropna()
     data.drop_duplicates(inplace=True)
 

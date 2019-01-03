@@ -13,6 +13,12 @@ def get_profit_and_loss(returns, signals, ex):
     # TODO: We need to check whether the market data we receive has datetime index and whether it coerces with signals
 
     # if data.shape[1] == 1:  # if 2nd dimention = 1 then we have dataframe with returns
+    returns.drop_duplicates(inplace=True)
+    signals.drop_duplicates(inplace=True)
+    uniframe = pd.DataFrame(signals).join(returns, how='outer').dropna()
+    uniframe.drop_duplicates(inplace=True)
+    pnl_data = pd.DataFrame(index=uniframe.index)
+
     if isinstance(signals, pd.DataFrame):
         pnl_data = pd.concat([data, signals], axis=1).dropna()
         for signal in signals.columns:
@@ -30,16 +36,17 @@ def get_profit_and_loss(returns, signals, ex):
     return pnl_data
 
 
-def get_confusion_matrix(data, signals):
+def get_confusion_matrix(data, filtered_signals):
     """
     Returns confsion matrix of trading strategy
     data input here is a series or a numpy array
     """
-    actual_movements = np.where(data.diff() > 0, 1, -1)
-    actual_movements = pd.Series(actual_movements, columns=['Actual'], index=data.index)
-    signals = pd.DataFrame(signals, columns=['Predicted'])
-    uniframe = signals.join(actual_movements, how='outer').dropna()
-    return pd.crosstab(actual_movements, signals,  # .replace(0, 1)
+    actual_movements_flags = np.where(data > 0, 1, -1)
+    actual_movements_flags = pd.DataFrame(actual_movements_flags, columns=['Actual'], index=data.index)
+    # filtered_signals = filtered_signals.to_frame(name='Predicted')
+    filtered_signals.columns = ['Predicted']
+    uniframe = filtered_signals.join(actual_movements_flags, how='outer').dropna()
+    return pd.crosstab(uniframe['Actual'], uniframe['Predicted'],  # .replace(0, 1)
                        rownames=['Actual'], colnames=['Predicted'], margins=True)
 
 

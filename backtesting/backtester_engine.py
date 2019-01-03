@@ -10,7 +10,7 @@ def deploy_backtesting_engine(data, indicator_signals, ex=0):
     data parameter should be a Dataframe with close prices!
     """
     pnl_data = bt.get_profit_and_loss(returns=data['Returns'], signals=indicator_signals, ex=0)
-    conf_matrix = bt.get_confusion_matrix(data['Close'], pnl_data['filtered_signals_pnl'])
+    conf_matrix = bt.get_confusion_matrix(data['Returns'], indicator_signals[['filtered_signals']])
     hit_ratio = bt.get_hit_ratio(conf_matrix)
 
     return pnl_data, conf_matrix, hit_ratio

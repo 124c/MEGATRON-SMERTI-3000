@@ -1,5 +1,5 @@
 import pandas as pd
-import numpy as np
+# import numpy as np
 import talib
 
 import alpha.technical_indicators as tech
@@ -27,7 +27,6 @@ def deploy_alpha_engine(data, params_dict):
                                                               mom_barrier=params_dict['mom_barrier'],
                                                               meanrev_barrier=params_dict['meanrev_barrier'])
 
-    indicator_signals.to_csv('datasets/alpha/alpha_signals.csv')
-    # return indicator_signals
-    return True
-
+    # indicator_signals.to_csv('datasets/alpha/alpha_signals.csv')
+    # return True
+    return indicator_signals

@@ -9,7 +9,6 @@ def get_profit_and_loss(returns, signals, ex):
     As a result we obtain dataset with profits and losses for each strategy in signals dataframe
     """
 
-    # TODO: We need to check whether the market data we receive has 2 dimensions and if not to transform it
     # TODO: We need to check whether the market data we receive has datetime index and whether it coerces with signals
 
     # if data.shape[1] == 1:  # if 2nd dimention = 1 then we have dataframe with returns
@@ -20,7 +19,6 @@ def get_profit_and_loss(returns, signals, ex):
     pnl_data = pd.DataFrame(index=uniframe.index)
 
     if isinstance(signals, pd.DataFrame):
-        pnl_data = pd.concat([data, signals], axis=1).dropna()
         for signal in signals.columns:
             pnl_data[signal + '_pnl'] = uniframe[signal] * uniframe['Returns']
             if ex == 1:

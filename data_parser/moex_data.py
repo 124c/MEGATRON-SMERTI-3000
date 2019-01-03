@@ -2,14 +2,14 @@ import pandas_datareader.data as web
 import pandas as pd
 
 
-def moex_data(tickers, start_date, end_date, form='OHLCV', boardID='TQBR'):
+def moex_data(tickers, start_date, end_date, data_form='OHLCV', boardID='TQBR'):
     """
     Returns a pandas Data Frame with tickers that you input
     :param tickers: list with selected tickers ['MGNT', 'SBER'] with a datetime index
     :param start_date: string or datetime object
     :param end_date: string or datetime object
     :param boardID: string denoting ASTS trading board
-    :param form: form of dataset to be returned
+    :param data_form: form of dataset to be returned
     :return: pandas Data Frame
     """
 

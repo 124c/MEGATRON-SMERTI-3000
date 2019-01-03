@@ -18,17 +18,17 @@ def optimize_rsi_period(data, optimization='profit+std'):
     profits = []
     av_profits = []
     for i in range(2, 72 + 1):
-        rsi_values = talib.RSI(data['close'].shift(), timeperiod=i)
-        signs = sign.rsi_signals(rsi_values)
-        pnl_data = bt.get_profit_and_loss(returns=data['close'].pct_change(), signals=signs, ex=0)
-        conf_matrix = bt.get_confusion_matrix(data['close'], signs)
+        rsi_values = talib.RSI(data['Close'].shift(), timeperiod=i)
+        signs = sign.rsi_signals(rsi_values).to_frame(name='Signals')
+        pnl_data = bt.get_profit_and_loss(returns=data['Returns'], signals=signs, ex=0)
+        conf_matrix = bt.get_confusion_matrix(data['Close'], signs)
         try:
             hit_ratio = bt.get_hit_ratio(conf_matrix)
         except KeyError:
             hit_ratio = np.nan
 
         hit_ratios.append(hit_ratio)
-        profits.append(sum(pnl_data.dropna()))
+        profits.append(pnl_data.dropna().sum().values[0])
         av_profits.append(np.median(pnl_data.dropna()))
 
     if optimization == 'profit':
@@ -54,8 +54,8 @@ def optimize_rsi_thresholds(data, rsi_values):
     for j in range(1, 40 + 1):
         for k in range(50, 100 + 1):
             signs = sign.rsi_signals(rsi_values, upper_threshold=k, lower_threshold=j)
-            pnl_data = sum(bt.get_profit_and_loss(returns=data['close'].pct_change(), signals=signs, ex=0).dropna())
-            conf_matrix = bt.get_confusion_matrix(data['close'], signs)
+            pnl_data = sum(bt.get_profit_and_loss(returns=data['Returns'], signals=signs, ex=0).dropna())
+            conf_matrix = bt.get_confusion_matrix(data['Close'], signs)
             try:
                 hit_ratio = bt.get_hit_ratio(conf_matrix)
             except KeyError:

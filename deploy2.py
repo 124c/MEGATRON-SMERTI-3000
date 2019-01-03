@@ -19,7 +19,6 @@ if __name__ == "__main__":
     data = data.dropna()
     data.drop_duplicates(inplace=True)
 
-    # deploy alpha engine with random parameters
     params_dict = {'hurst_period': 24,
                    'macd_fastperiod': 5,
                    'macd_slowperiod': 8,
@@ -30,12 +29,14 @@ if __name__ == "__main__":
                    'mom_barrier': 0,
                    'meanrev_barrier': 0
                    }
+
+    params_dict = optimization.deploy_optimization(data=data, params_dict=params_dict)
+
     indicator_signals = alpha.deploy_alpha_engine(data, params_dict=params_dict)
     indicator_signals = indicator_signals.dropna()
     indicator_signals.drop_duplicates(inplace=True)
 
     # deploy backtesting engine
-    # TODO: I see infs with  2015-04-08 - 2016-12-31 in pnl data. backtesting module should be cleared and reworked
     pnl_data, conf_matrix, hit_ratio = backtest.deploy_backtesting_engine(data=data,
                                                                           indicator_signals=indicator_signals, ex=0)
 

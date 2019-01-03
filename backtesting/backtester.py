@@ -12,8 +12,8 @@ def get_profit_and_loss(returns, signals, ex):
     # TODO: We need to check whether the market data we receive has datetime index and whether it coerces with signals
 
     # if data.shape[1] == 1:  # if 2nd dimention = 1 then we have dataframe with returns
-    returns.drop_duplicates(inplace=True)
-    signals.drop_duplicates(inplace=True)
+    # returns.drop_duplicates(inplace=True)
+    # signals.drop_duplicates(inplace=True)
     uniframe = pd.DataFrame(signals).join(returns, how='outer').dropna()
     uniframe.drop_duplicates(inplace=True)
     pnl_data = pd.DataFrame(index=uniframe.index)
@@ -42,7 +42,9 @@ def get_confusion_matrix(data, filtered_signals):
     actual_movements_flags = np.where(data > 0, 1, -1)
     actual_movements_flags = pd.DataFrame(actual_movements_flags, columns=['Actual'], index=data.index)
     # filtered_signals = filtered_signals.to_frame(name='Predicted')
-    filtered_signals.columns = ['Predicted']
+    filtered_signals = pd.DataFrame(data=filtered_signals.values,
+                                    index=filtered_signals.index,
+                                    columns=['Predicted'])
     uniframe = filtered_signals.join(actual_movements_flags, how='outer').dropna()
     return pd.crosstab(uniframe['Actual'], uniframe['Predicted'],  # .replace(0, 1)
                        rownames=['Actual'], colnames=['Predicted'], margins=True)

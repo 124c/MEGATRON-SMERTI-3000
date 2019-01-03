@@ -19,10 +19,12 @@ def moex_data(tickers, start_date, end_date, form='OHLCV', boardID='TQBR'):
     dirty_data = web.DataReader(tickers, 'moex', start_date, end_date)
     dirty_data = dirty_data[dirty_data['BOARDID'] == boardID]
 
-    if form == 'OHLCV':
-        return dirty_data[['OPEN', 'HIGH', 'LOW', 'CLOSE', 'NUMTRADES', 'VOLUME', 'SECID']]
-    elif form == 'Close':
-        close_data = pd.DataFrame(index=tickers.index)
+    if data_form == 'OHLCV':
+        returndata = dirty_data[['OPEN', 'HIGH', 'LOW', 'CLOSE', 'NUMTRADES', 'VOLUME', 'SECID']]
+        returndata.columns = ['Open', 'High', 'Low', 'Close', 'Numtrades', 'Volume', 'SECID']
+        return returndata
+    elif data_form == 'Close':
+        close_data = pd.DataFrame(index=dirty_data.drop_duplicates().index)
         for i in dirty_data['SECID'].unique():
             close_data[i] = dirty_data.groupby(['SECID']).get_group(i)[['CLOSE']].drop_duplicates()
         return close_data
